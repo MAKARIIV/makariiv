@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { MessageCircle, Plus, Minus } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { MessageCircle, Plus, Minus, Pencil, Check } from "lucide-react";
 import product1 from "@/assets/product-1.jpg";
 import product2 from "@/assets/product-2.jpg";
 import product3 from "@/assets/product-3.jpg";
@@ -18,10 +18,29 @@ const products = [
   { name: "Small Chops Pack", price: "₦5,000", image: product6, description: "Meat pie, spring rolls & puff-puff. Perfect for events." },
 ];
 
+const DEFAULT_TITLE = "🍽️ Today's Available Meals";
+
 const ProductGrid = () => {
   const [quantities, setQuantities] = useState<Record<string, number>>(
     Object.fromEntries(products.map((p) => [p.name, 1]))
   );
+  const [title, setTitle] = useState(() => localStorage.getItem("menu-title") || DEFAULT_TITLE);
+  const [isEditing, setIsEditing] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isEditing && inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
+  }, [isEditing]);
+
+  const saveTitle = () => {
+    const trimmed = title.trim() || DEFAULT_TITLE;
+    setTitle(trimmed);
+    localStorage.setItem("menu-title", trimmed);
+    setIsEditing(false);
+  };
 
   const updateQty = (name: string, delta: number) => {
     setQuantities((prev) => ({
@@ -34,9 +53,32 @@ const ProductGrid = () => {
     <section id="menu" className="py-16 px-4 bg-background">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold font-display text-foreground mb-3">
-            🍽️ Our Menu
-          </h2>
+          <div className="flex items-center justify-center gap-2">
+            {isEditing ? (
+              <div className="flex items-center gap-2">
+                <input
+                  ref={inputRef}
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && saveTitle()}
+                  onBlur={saveTitle}
+                  className="text-3xl md:text-4xl font-bold font-display text-foreground bg-transparent border-b-2 border-primary outline-none text-center max-w-md"
+                />
+                <button onClick={saveTitle} className="text-primary hover:opacity-80 transition-opacity" aria-label="Save title">
+                  <Check size={24} />
+                </button>
+              </div>
+            ) : (
+              <h2
+                className="text-3xl md:text-4xl font-bold font-display text-foreground mb-3 cursor-pointer group inline-flex items-center gap-2"
+                onClick={() => setIsEditing(true)}
+                title="Click to edit"
+              >
+                {title}
+                <Pencil size={18} className="opacity-0 group-hover:opacity-50 transition-opacity" />
+              </h2>
+            )}
+          </div>
           <p className="text-muted-foreground font-body text-lg">
             Everything fresh, everything delicious
           </p>
