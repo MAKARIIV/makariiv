@@ -1,6 +1,6 @@
 import { MessageCircle, Phone, Instagram } from "lucide-react";
 
-const WHATSAPP_NUMBER = "2348012345678";
+const WHATSAPP_NUMBER = "2348060026486";
 
 const ContactSection = () => {
   const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Hi! I want to place an order.")}`;
@@ -17,7 +17,7 @@ const ContactSection = () => {
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
           <a
-            href="tel:+2348012345678"
+            href="tel:+2348060026486"
             className="inline-flex items-center gap-2 bg-card border border-border rounded-full px-6 py-3 font-body text-card-foreground hover:shadow-md transition-shadow"
           >
             <Phone size={18} className="text-primary" />
