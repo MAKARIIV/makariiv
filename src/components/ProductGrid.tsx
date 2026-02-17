@@ -1,4 +1,4 @@
-import ProductCard from "./ProductCard";
+import { MessageCircle } from "lucide-react";
 import product1 from "@/assets/product-1.jpg";
 import product2 from "@/assets/product-2.jpg";
 import product3 from "@/assets/product-3.jpg";
@@ -6,67 +6,71 @@ import product4 from "@/assets/product-4.jpg";
 import product5 from "@/assets/product-5.jpg";
 import product6 from "@/assets/product-6.jpg";
 
-const WHATSAPP_NUMBER = "2348012345678"; // Replace with your number
+const WHATSAPP_NUMBER = "2348012345678";
 
 const products = [
-  {
-    name: "Jollof Rice Combo",
-    price: "₦3,500",
-    image: product1,
-    description: "Smoky jollof rice with fried plantain and peppered chicken.",
-  },
-  {
-    name: "Birthday Cake",
-    price: "₦25,000",
-    image: product2,
-    description: "Custom layered cake with cream frosting and fresh berries.",
-  },
-  {
-    name: "Designer Perfume",
-    price: "₦15,000",
-    image: product3,
-    description: "Long-lasting luxury fragrance. Unisex, 100ml bottle.",
-  },
-  {
-    name: "Knotless Braids",
-    price: "₦20,000",
-    image: product4,
-    description: "Neat knotless braids, waist-length. Lasts 6-8 weeks.",
-  },
-  {
-    name: "Thrift Outfit Bundle",
-    price: "₦8,000",
-    image: product5,
-    description: "Curated vintage outfit with accessories. Fresh & unique.",
-  },
-  {
-    name: "Small Chops Pack",
-    price: "₦5,000",
-    image: product6,
-    description: "Meat pie, spring rolls & puff-puff. Perfect for events.",
-  },
+  { name: "Jollof Rice Combo", price: "₦3,500", image: product1, description: "Smoky jollof rice with fried plantain and peppered chicken." },
+  { name: "Birthday Cake", price: "₦25,000", image: product2, description: "Custom layered cake with cream frosting and fresh berries." },
+  { name: "Designer Perfume", price: "₦15,000", image: product3, description: "Long-lasting luxury fragrance. Unisex, 100ml bottle." },
+  { name: "Knotless Braids", price: "₦20,000", image: product4, description: "Neat knotless braids, waist-length. Lasts 6-8 weeks." },
+  { name: "Thrift Outfit Bundle", price: "₦8,000", image: product5, description: "Curated vintage outfit with accessories. Fresh & unique." },
+  { name: "Small Chops Pack", price: "₦5,000", image: product6, description: "Meat pie, spring rolls & puff-puff. Perfect for events." },
 ];
 
 const ProductGrid = () => {
+  const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Hi! I'd like to place an order.")}`;
+
   return (
-    <section id="products" className="py-16 px-4">
+    <section id="menu" className="py-16 px-4 bg-background">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold font-display text-foreground mb-3">
-            Our Products
+            🍽️ Our Menu
           </h2>
           <p className="text-muted-foreground font-body text-lg">
-            Tap any item to order instantly via WhatsApp
+            Everything fresh, everything delicious
           </p>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <div className="space-y-4">
           {products.map((product) => (
-            <ProductCard
+            <div
               key={product.name}
-              {...product}
-              whatsappNumber={WHATSAPP_NUMBER}
-            />
+              className="flex items-center gap-4 bg-card rounded-2xl border border-border p-3 hover:shadow-md transition-shadow"
+            >
+              <img
+                src={product.image}
+                alt={product.name}
+                className="w-20 h-20 md:w-24 md:h-24 rounded-xl object-cover flex-shrink-0"
+                loading="lazy"
+              />
+              <div className="flex-1 min-w-0">
+                <div className="flex items-start justify-between gap-2">
+                  <h3 className="font-display font-semibold text-card-foreground text-base md:text-lg">
+                    {product.name}
+                  </h3>
+                  <span className="font-display font-bold text-primary text-base md:text-lg whitespace-nowrap">
+                    {product.price}
+                  </span>
+                </div>
+                <p className="text-muted-foreground text-sm font-body mt-1 line-clamp-2">
+                  {product.description}
+                </p>
+              </div>
+            </div>
           ))}
+        </div>
+
+        <div className="text-center mt-10">
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 bg-whatsapp text-whatsapp-foreground font-display font-semibold px-8 py-4 rounded-full text-lg hover:scale-105 transition-transform shadow-lg"
+          >
+            <MessageCircle size={22} />
+            Order Now on WhatsApp
+          </a>
         </div>
       </div>
     </section>
