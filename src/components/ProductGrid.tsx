@@ -6,7 +6,7 @@ import product4 from "@/assets/product-4.jpg";
 import product5 from "@/assets/product-5.jpg";
 import product6 from "@/assets/product-6.jpg";
 
-const WHATSAPP_NUMBER = "2348012345678";
+const WHATSAPP_NUMBER = "2348060026486";
 
 const products = [
   { name: "Jollof Rice Combo", price: "₦3,500", image: product1, description: "Smoky jollof rice with fried plantain and peppered chicken." },
