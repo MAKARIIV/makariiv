@@ -56,6 +56,15 @@ const ProductGrid = () => {
                 <p className="text-muted-foreground text-sm font-body mt-1 line-clamp-2">
                   {product.description}
                 </p>
+                <a
+                  href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`Hi! I'd like to order: ${product.name} (${product.price}) x 1`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 mt-2 bg-whatsapp text-whatsapp-foreground font-display font-semibold px-4 py-2 rounded-lg text-sm hover:opacity-90 transition-opacity"
+                >
+                  <MessageCircle size={16} />
+                  Order This
+                </a>
               </div>
             </div>
           ))}
