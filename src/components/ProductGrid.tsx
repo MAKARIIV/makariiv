@@ -1,4 +1,5 @@
-import { MessageCircle } from "lucide-react";
+import { useState } from "react";
+import { MessageCircle, Plus, Minus } from "lucide-react";
 import product1 from "@/assets/product-1.jpg";
 import product2 from "@/assets/product-2.jpg";
 import product3 from "@/assets/product-3.jpg";
@@ -18,7 +19,16 @@ const products = [
 ];
 
 const ProductGrid = () => {
-  const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Hi! I'd like to place an order.")}`;
+  const [quantities, setQuantities] = useState<Record<string, number>>(
+    Object.fromEntries(products.map((p) => [p.name, 1]))
+  );
+
+  const updateQty = (name: string, delta: number) => {
+    setQuantities((prev) => ({
+      ...prev,
+      [name]: Math.max(1, (prev[name] || 1) + delta),
+    }));
+  };
 
   return (
     <section id="menu" className="py-16 px-4 bg-background">
@@ -33,46 +43,73 @@ const ProductGrid = () => {
         </div>
 
         <div className="space-y-4">
-          {products.map((product) => (
-            <div
-              key={product.name}
-              className="flex items-center gap-4 bg-card rounded-2xl border border-border p-3 hover:shadow-md transition-shadow"
-            >
-              <img
-                src={product.image}
-                alt={product.name}
-                className="w-20 h-20 md:w-24 md:h-24 rounded-xl object-cover flex-shrink-0"
-                loading="lazy"
-              />
-              <div className="flex-1 min-w-0">
-                <div className="flex items-start justify-between gap-2">
-                  <h3 className="font-display font-semibold text-card-foreground text-base md:text-lg">
-                    {product.name}
-                  </h3>
-                  <span className="font-display font-bold text-primary text-base md:text-lg whitespace-nowrap">
-                    {product.price}
-                  </span>
+          {products.map((product) => {
+            const qty = quantities[product.name] || 1;
+            const message = encodeURIComponent(
+              `Hi! I'd like to order: ${product.name} (${product.price}) x ${qty}`
+            );
+            return (
+              <div
+                key={product.name}
+                className="flex items-center gap-4 bg-card rounded-2xl border border-border p-3 hover:shadow-md transition-shadow"
+              >
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-20 h-20 md:w-24 md:h-24 rounded-xl object-cover flex-shrink-0"
+                  loading="lazy"
+                />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-2">
+                    <h3 className="font-display font-semibold text-card-foreground text-base md:text-lg">
+                      {product.name}
+                    </h3>
+                    <span className="font-display font-bold text-primary text-base md:text-lg whitespace-nowrap">
+                      {product.price}
+                    </span>
+                  </div>
+                  <p className="text-muted-foreground text-sm font-body mt-1 line-clamp-2">
+                    {product.description}
+                  </p>
+                  <div className="flex items-center gap-3 mt-2">
+                    <div className="inline-flex items-center border border-border rounded-lg overflow-hidden">
+                      <button
+                        onClick={() => updateQty(product.name, -1)}
+                        className="p-1.5 hover:bg-muted transition-colors text-muted-foreground"
+                        aria-label="Decrease quantity"
+                      >
+                        <Minus size={14} />
+                      </button>
+                      <span className="px-3 text-sm font-display font-semibold text-card-foreground min-w-[2rem] text-center">
+                        {qty}
+                      </span>
+                      <button
+                        onClick={() => updateQty(product.name, 1)}
+                        className="p-1.5 hover:bg-muted transition-colors text-muted-foreground"
+                        aria-label="Increase quantity"
+                      >
+                        <Plus size={14} />
+                      </button>
+                    </div>
+                    <a
+                      href={`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 bg-whatsapp text-whatsapp-foreground font-display font-semibold px-4 py-2 rounded-lg text-sm hover:opacity-90 transition-opacity"
+                    >
+                      <MessageCircle size={16} />
+                      Order
+                    </a>
+                  </div>
                 </div>
-                <p className="text-muted-foreground text-sm font-body mt-1 line-clamp-2">
-                  {product.description}
-                </p>
-                <a
-                  href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`Hi! I'd like to order: ${product.name} (${product.price}) x 1`)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 mt-2 bg-whatsapp text-whatsapp-foreground font-display font-semibold px-4 py-2 rounded-lg text-sm hover:opacity-90 transition-opacity"
-                >
-                  <MessageCircle size={16} />
-                  Order This
-                </a>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         <div className="text-center mt-10">
           <a
-            href={whatsappUrl}
+            href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Hi! I'd like to place an order.")}`}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 bg-whatsapp text-whatsapp-foreground font-display font-semibold px-8 py-4 rounded-full text-lg hover:scale-105 transition-transform shadow-lg"
