@@ -22,7 +22,7 @@ const DEFAULT_TITLE = "🍽️ Today's Available Meals";
 
 const ProductGrid = () => {
   const [quantities, setQuantities] = useState<Record<string, number>>(
-    Object.fromEntries(products.map((p) => [p.name, 1]))
+    Object.fromEntries(products.map((p) => [p.name, 0]))
   );
   const [title, setTitle] = useState(() => localStorage.getItem("menu-title") || DEFAULT_TITLE);
   const [isEditing, setIsEditing] = useState(false);
@@ -58,9 +58,19 @@ const ProductGrid = () => {
   const updateQty = (name: string, delta: number) => {
     setQuantities((prev) => ({
       ...prev,
-      [name]: Math.max(1, (prev[name] || 1) + delta),
+      [name]: Math.max(0, (prev[name] || 0) + delta),
     }));
   };
+
+  const selectedItems = products.filter(
+    (p) => quantities[p.name] > 0 && availability[p.name] !== false
+  );
+
+  const orderMessage = encodeURIComponent(
+    `Hi! I'd like to order:\n${selectedItems
+      .map((p) => `• ${p.name} (${p.price}) x ${quantities[p.name]}`)
+      .join("\n")}`
+  );
 
   return (
     <section id="menu" className="py-16 px-4 bg-background">
@@ -115,11 +125,8 @@ const ProductGrid = () => {
 
         <div className="space-y-4">
           {products.map((product) => {
-            const qty = quantities[product.name] || 1;
+            const qty = quantities[product.name] || 0;
             const isAvailable = availability[product.name] !== false;
-            const message = encodeURIComponent(
-              `Hi! I'd like to order: ${product.name} (${product.price}) x ${qty}`
-            );
             return (
               <div
                 key={product.name}
@@ -164,15 +171,9 @@ const ProductGrid = () => {
                         <Plus size={14} />
                       </button>
                     </div>
-                    <a
-                      href={`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 bg-whatsapp text-whatsapp-foreground font-display font-semibold px-4 py-2 rounded-lg text-sm hover:opacity-90 transition-opacity"
-                    >
-                      <MessageCircle size={16} />
-                      Order
-                    </a>
+                    {qty > 0 && (
+                      <span className="text-xs font-body text-primary font-semibold">Added ✓</span>
+                    )}
                   </div>
                   )}
                   {!isAvailable && (
@@ -184,7 +185,29 @@ const ProductGrid = () => {
           })}
         </div>
 
+        {selectedItems.length > 0 && (
+          <div className="sticky bottom-4 mt-6 bg-card border border-border rounded-2xl p-4 shadow-lg">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="text-sm font-body text-muted-foreground">
+                <span className="font-semibold text-foreground">{selectedItems.length} item{selectedItems.length > 1 ? "s" : ""}</span> selected:{" "}
+                {selectedItems.map((p) => `${p.name} x${quantities[p.name]}`).join(", ")}
+              </div>
+              <a
+                href={`https://wa.me/${WHATSAPP_NUMBER}?text=${orderMessage}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-whatsapp text-whatsapp-foreground font-display font-semibold px-6 py-3 rounded-full text-base hover:scale-105 transition-transform shadow-md whitespace-nowrap"
+              >
+                <MessageCircle size={20} />
+                Send Order on WhatsApp
+              </a>
+            </div>
+          </div>
+        )}
+
+        {selectedItems.length === 0 && (
         <div className="text-center mt-10">
+          <p className="text-muted-foreground font-body mb-4">Select items above, then send your order</p>
           <a
             href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Hi! I'd like to place an order.")}`}
             target="_blank"
@@ -192,9 +215,10 @@ const ProductGrid = () => {
             className="inline-flex items-center gap-2 bg-whatsapp text-whatsapp-foreground font-display font-semibold px-8 py-4 rounded-full text-lg hover:scale-105 transition-transform shadow-lg"
           >
             <MessageCircle size={22} />
-            Order Now on WhatsApp
+            Chat on WhatsApp
           </a>
         </div>
+        )}
       </div>
     </section>
   );
