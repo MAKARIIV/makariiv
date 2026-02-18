@@ -27,6 +27,11 @@ const ProductGrid = () => {
   const [title, setTitle] = useState(() => localStorage.getItem("menu-title") || DEFAULT_TITLE);
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [availability, setAvailability] = useState<Record<string, boolean>>(() => {
+    const saved = localStorage.getItem("menu-availability");
+    if (saved) return JSON.parse(saved);
+    return Object.fromEntries(products.map((p) => [p.name, true]));
+  });
 
   useEffect(() => {
     if (isEditing && inputRef.current) {
@@ -40,6 +45,14 @@ const ProductGrid = () => {
     setTitle(trimmed);
     localStorage.setItem("menu-title", trimmed);
     setIsEditing(false);
+  };
+
+  const toggleAvailability = (name: string) => {
+    setAvailability((prev) => {
+      const next = { ...prev, [name]: !prev[name] };
+      localStorage.setItem("menu-availability", JSON.stringify(next));
+      return next;
+    });
   };
 
   const updateQty = (name: string, delta: number) => {
@@ -82,18 +95,35 @@ const ProductGrid = () => {
           <p className="text-muted-foreground font-body text-lg">
             Everything fresh, everything delicious
           </p>
+          <div className="flex flex-wrap justify-center gap-2 mt-4">
+            {products.map((p) => (
+              <button
+                key={p.name}
+                onClick={() => toggleAvailability(p.name)}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-body border transition-colors ${
+                  availability[p.name]
+                    ? "bg-primary/10 border-primary/30 text-primary"
+                    : "bg-muted border-border text-muted-foreground line-through"
+                }`}
+              >
+                {availability[p.name] ? "✅" : "❌"} {p.name}
+                {!availability[p.name] && <span className="text-xs no-underline">(Finished)</span>}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="space-y-4">
           {products.map((product) => {
             const qty = quantities[product.name] || 1;
+            const isAvailable = availability[product.name] !== false;
             const message = encodeURIComponent(
               `Hi! I'd like to order: ${product.name} (${product.price}) x ${qty}`
             );
             return (
               <div
                 key={product.name}
-                className="flex items-center gap-4 bg-card rounded-2xl border border-border p-3 hover:shadow-md transition-shadow"
+                className={`flex items-center gap-4 bg-card rounded-2xl border border-border p-3 transition-shadow ${isAvailable ? "hover:shadow-md" : "opacity-50"}`}
               >
                 <img
                   src={product.image}
@@ -113,6 +143,7 @@ const ProductGrid = () => {
                   <p className="text-muted-foreground text-sm font-body mt-1 line-clamp-2">
                     {product.description}
                   </p>
+                  {isAvailable && (
                   <div className="flex items-center gap-3 mt-2">
                     <div className="inline-flex items-center border border-border rounded-lg overflow-hidden">
                       <button
@@ -143,6 +174,10 @@ const ProductGrid = () => {
                       Order
                     </a>
                   </div>
+                  )}
+                  {!isAvailable && (
+                    <p className="text-sm font-body text-destructive mt-1">❌ Finished</p>
+                  )}
                 </div>
               </div>
             );
