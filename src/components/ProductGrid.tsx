@@ -60,17 +60,29 @@ const formatPrice = (price: number) => `₦${price.toLocaleString()}`;
 
 const ProductGrid = () => {
   const [quantities, setQuantities] = useState<Record<string, number>>({});
+  const defaultUnavailable: Record<string, boolean> = { "Snails": true };
   const [unavailable, setUnavailable] = useState<Record<string, boolean>>(() => {
     try {
       const stored = localStorage.getItem("klassy-unavailable");
       if (stored) {
         const parsed = JSON.parse(stored);
-        // Reset if stored date is not today
-        if (parsed.date !== new Date().toDateString()) return {};
+        if (parsed.date !== new Date().toDateString()) {
+          // New day — apply defaults
+          localStorage.setItem(
+            "klassy-unavailable",
+            JSON.stringify({ date: new Date().toDateString(), items: defaultUnavailable })
+          );
+          return defaultUnavailable;
+        }
         return parsed.items || {};
       }
     } catch {}
-    return {};
+    // First visit — apply defaults
+    localStorage.setItem(
+      "klassy-unavailable",
+      JSON.stringify({ date: new Date().toDateString(), items: defaultUnavailable })
+    );
+    return defaultUnavailable;
   });
   const [editMode, setEditMode] = useState(false);
 
