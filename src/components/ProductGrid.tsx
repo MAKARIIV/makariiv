@@ -59,6 +59,30 @@ const formatPrice = (price: number) => `₦${price.toLocaleString()}`;
 
 const ProductGrid = () => {
   const [quantities, setQuantities] = useState<Record<string, number>>({});
+  const [unavailable, setUnavailable] = useState<Record<string, boolean>>(() => {
+    try {
+      const stored = localStorage.getItem("klassy-unavailable");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        // Reset if stored date is not today
+        if (parsed.date !== new Date().toDateString()) return {};
+        return parsed.items || {};
+      }
+    } catch {}
+    return {};
+  });
+  const [editMode, setEditMode] = useState(false);
+
+  const toggleAvailability = (name: string) => {
+    setUnavailable((prev) => {
+      const next = { ...prev, [name]: !prev[name] };
+      localStorage.setItem(
+        "klassy-unavailable",
+        JSON.stringify({ date: new Date().toDateString(), items: next })
+      );
+      return next;
+    });
+  };
 
   const updateQty = (name: string, delta: number) => {
     setQuantities((prev) => ({
