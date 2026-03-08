@@ -106,15 +106,33 @@ const ProductGrid = () => {
       .join("\n")}\n\nTotal: ${formatPrice(totalPrice)}`
   );
 
+  const isUnavailable = (name: string) => !!unavailable[name];
+
+  const availableCount = allItems.filter((i) => !isUnavailable(i.name)).length;
+
   const renderItem = (item: MenuItem) => {
     const qty = quantities[item.name] || 0;
+    const soldOut = isUnavailable(item.name);
     return (
       <div
         key={item.name}
         className={`flex items-center gap-4 bg-card rounded-2xl border p-3 transition-shadow hover:shadow-md ${
-          qty > 0 ? "border-primary/40 shadow-sm" : "border-border"
+          soldOut
+            ? "opacity-50 border-border"
+            : qty > 0
+            ? "border-primary/40 shadow-sm"
+            : "border-border"
         }`}
       >
+        {editMode && (
+          <div className="flex-shrink-0">
+            <Checkbox
+              checked={!soldOut}
+              onCheckedChange={() => toggleAvailability(item.name)}
+              aria-label={`Mark ${item.name} as ${soldOut ? "available" : "finished"}`}
+            />
+          </div>
+        )}
         <img
           src={item.image}
           alt={item.name}
@@ -125,6 +143,11 @@ const ProductGrid = () => {
           <div className="flex items-start justify-between gap-2">
             <h3 className="font-display font-semibold text-card-foreground text-base md:text-lg">
               {item.name}
+              {soldOut && (
+                <span className="ml-2 text-xs font-body text-destructive font-semibold">
+                  Finished
+                </span>
+              )}
             </h3>
             <span className="font-display font-bold text-primary text-base md:text-lg whitespace-nowrap">
               {formatPrice(item.price)}
@@ -133,30 +156,32 @@ const ProductGrid = () => {
           <p className="text-muted-foreground text-sm font-body mt-1 line-clamp-2">
             {item.description}
           </p>
-          <div className="flex items-center gap-3 mt-2">
-            <div className="inline-flex items-center border border-border rounded-lg overflow-hidden">
-              <button
-                onClick={() => updateQty(item.name, -1)}
-                className="p-1.5 hover:bg-muted transition-colors text-muted-foreground"
-                aria-label="Decrease quantity"
-              >
-                <Minus size={14} />
-              </button>
-              <span className="px-3 text-sm font-display font-semibold text-card-foreground min-w-[2rem] text-center">
-                {qty}
-              </span>
-              <button
-                onClick={() => updateQty(item.name, 1)}
-                className="p-1.5 hover:bg-muted transition-colors text-muted-foreground"
-                aria-label="Increase quantity"
-              >
-                <Plus size={14} />
-              </button>
+          {!soldOut && (
+            <div className="flex items-center gap-3 mt-2">
+              <div className="inline-flex items-center border border-border rounded-lg overflow-hidden">
+                <button
+                  onClick={() => updateQty(item.name, -1)}
+                  className="p-1.5 hover:bg-muted transition-colors text-muted-foreground"
+                  aria-label="Decrease quantity"
+                >
+                  <Minus size={14} />
+                </button>
+                <span className="px-3 text-sm font-display font-semibold text-card-foreground min-w-[2rem] text-center">
+                  {qty}
+                </span>
+                <button
+                  onClick={() => updateQty(item.name, 1)}
+                  className="p-1.5 hover:bg-muted transition-colors text-muted-foreground"
+                  aria-label="Increase quantity"
+                >
+                  <Plus size={14} />
+                </button>
+              </div>
+              {qty > 0 && (
+                <span className="text-xs font-body text-primary font-semibold">Added ✓</span>
+              )}
             </div>
-            {qty > 0 && (
-              <span className="text-xs font-body text-primary font-semibold">Added ✓</span>
-            )}
-          </div>
+          )}
         </div>
       </div>
     );
@@ -165,6 +190,27 @@ const ProductGrid = () => {
   return (
     <section id="menu" className="py-16 px-4 bg-background">
       <div className="max-w-3xl mx-auto">
+        {/* Today's Available Meals Banner */}
+        <div className="bg-card border border-border rounded-2xl p-4 mb-10 text-center">
+          <div className="flex items-center justify-center gap-2 mb-1">
+            <Check size={20} className="text-accent" />
+            <h2 className="text-xl md:text-2xl font-bold font-display text-foreground">
+              Today's Available Meals
+            </h2>
+          </div>
+          <p className="text-muted-foreground font-body text-sm">
+            <span className="font-semibold text-accent">{availableCount}</span> of{" "}
+            {allItems.length} items available today
+          </p>
+          <button
+            onClick={() => setEditMode((v) => !v)}
+            className="mt-2 inline-flex items-center gap-1.5 text-xs font-body text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <Settings size={14} />
+            {editMode ? "Done editing" : "Update availability"}
+          </button>
+        </div>
+
         <div className="text-center mb-8">
           <h2 className="text-3xl md:text-4xl font-bold font-display text-foreground mb-2">
             🍽️ Platters
