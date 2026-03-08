@@ -212,7 +212,7 @@ const ProductGrid = () => {
           </div>
           <p className="text-muted-foreground font-body text-sm">
             <span className="font-semibold text-accent">{availableCount}</span> of{" "}
-            {allItems.length} items available today
+            {allItems.length} items available today — Small chops available! 🎉
           </p>
           <button
             onClick={() => setEditMode((v) => !v)}
