@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { MessageCircle, Plus, Minus } from "lucide-react";
+import { MessageCircle, Plus, Minus, Check, X, Settings } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 
 import singlePackImg from "@/assets/single-pack.jpg";
 import miniPlatterImg from "@/assets/mini-platter.jpg";
