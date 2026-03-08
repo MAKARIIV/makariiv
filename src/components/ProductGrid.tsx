@@ -1,37 +1,58 @@
 import { useState } from "react";
 import { MessageCircle, Plus, Minus } from "lucide-react";
 
+import singlePackImg from "@/assets/single-pack.jpg";
+import miniPlatterImg from "@/assets/mini-platter.jpg";
+import mediumPlatterImg from "@/assets/medium-platter.jpg";
+import familyPlatterImg from "@/assets/family-platter.jpg";
+import xtraLargePlatterImg from "@/assets/xtra-large-platter.jpg";
+import premiumPlatterImg from "@/assets/premium-platter.jpg";
+import springRollsImg from "@/assets/spring-rolls.jpg";
+import samosaImg from "@/assets/samosa.jpg";
+import chickenImg from "@/assets/chicken.jpg";
+import beefImg from "@/assets/beef.jpg";
+import gizzardKebabImg from "@/assets/gizzard-kebab.jpg";
+import puffsImg from "@/assets/puffs.jpg";
+import mosaImg from "@/assets/mosa.jpg";
+import moneyBagImg from "@/assets/money-bag.jpg";
+import snailsImg from "@/assets/snails.jpg";
+import turkeyImg from "@/assets/turkey.jpg";
+import midWingImg from "@/assets/mid-wing.jpg";
+import pepperSauceImg from "@/assets/pepper-sauce.jpg";
+import chinchinImg from "@/assets/chinchin.jpg";
+
 const WHATSAPP_NUMBER = "2348060026486";
 
 interface MenuItem {
   name: string;
   price: number;
   description: string;
+  image: string;
 }
 
 const platters: MenuItem[] = [
-  { name: "Single Pack", price: 3000, description: "2 spring rolls, 1 samosa, 1 pc spicy chicken or beef, 4 puffs" },
-  { name: "Mini Platter", price: 12000, description: "5 spring rolls, 5 samosa, 10 puff puff, 3 pcs spicy chicken, pepper sauce" },
-  { name: "Medium Platter", price: 15500, description: "7 spring rolls, 7 samosa, 15 puff puff, 4 pcs spicy chicken, pepper sauce" },
-  { name: "Family Platter", price: 25500, description: "10 spring rolls, 10 samosa, 20 puff puff, 2 large corndogs, 6 pcs spicy chicken, pepper sauce" },
-  { name: "Xtra Large Platter", price: 35000, description: "12 spring rolls, 12 samosa, 30 puff puff, 4 large corndogs, 10 pcs spicy chicken, pepper sauce" },
-  { name: "Premium Platter", price: 80500, description: "20 spring rolls, 20 samosa, 20 mosa, 50 puffs, 10 corndogs, pepper sauce, 5 pcs spicy turkey, 10 pcs spicy chicken, 5 pcs gizzard or beef kebab" },
+  { name: "Single Pack", price: 3000, description: "2 spring rolls, 1 samosa, 1 pc spicy chicken or beef, 4 puffs", image: singlePackImg },
+  { name: "Mini Platter", price: 12000, description: "5 spring rolls, 5 samosa, 10 puff puff, 3 pcs spicy chicken, pepper sauce", image: miniPlatterImg },
+  { name: "Medium Platter", price: 15500, description: "7 spring rolls, 7 samosa, 15 puff puff, 4 pcs spicy chicken, pepper sauce", image: mediumPlatterImg },
+  { name: "Family Platter", price: 25500, description: "10 spring rolls, 10 samosa, 20 puff puff, 2 large corndogs, 6 pcs spicy chicken, pepper sauce", image: familyPlatterImg },
+  { name: "Xtra Large Platter", price: 35000, description: "12 spring rolls, 12 samosa, 30 puff puff, 4 large corndogs, 10 pcs spicy chicken, pepper sauce", image: xtraLargePlatterImg },
+  { name: "Premium Platter", price: 80500, description: "20 spring rolls, 20 samosa, 20 mosa, 50 puffs, 10 corndogs, pepper sauce, 5 pcs spicy turkey, 10 pcs spicy chicken, 5 pcs gizzard or beef kebab", image: premiumPlatterImg },
 ];
 
 const extras: MenuItem[] = [
-  { name: "Spring Rolls", price: 500, description: "1 piece" },
-  { name: "Samosa", price: 500, description: "1 piece" },
-  { name: "Chicken", price: 2000, description: "Spicy chicken" },
-  { name: "Beef", price: 800, description: "1 piece" },
-  { name: "Gizzard Kebab", price: 1500, description: "1 stick" },
-  { name: "Puffs (10 pcs)", price: 1000, description: "10 pieces" },
-  { name: "Mosa", price: 150, description: "1 piece" },
-  { name: "Money Bag", price: 400, description: "1 piece" },
-  { name: "Snails", price: 1200, description: "1 piece" },
-  { name: "Turkey Part", price: 3000, description: "1 piece" },
-  { name: "Mid Wing", price: 7000, description: "Per portion" },
-  { name: "Extra Pepper Sauce", price: 300, description: "1 portion" },
-  { name: "Chinchin (2.3kg)", price: 19500, description: "2.3kg pack" },
+  { name: "Spring Rolls", price: 500, description: "1 piece", image: springRollsImg },
+  { name: "Samosa", price: 500, description: "1 piece", image: samosaImg },
+  { name: "Chicken", price: 2000, description: "Spicy chicken", image: chickenImg },
+  { name: "Beef", price: 800, description: "1 piece", image: beefImg },
+  { name: "Gizzard Kebab", price: 1500, description: "1 stick", image: gizzardKebabImg },
+  { name: "Puffs (10 pcs)", price: 1000, description: "10 pieces", image: puffsImg },
+  { name: "Mosa", price: 150, description: "1 piece", image: mosaImg },
+  { name: "Money Bag", price: 400, description: "1 piece", image: moneyBagImg },
+  { name: "Snails", price: 1200, description: "1 piece", image: snailsImg },
+  { name: "Turkey Part", price: 3000, description: "1 piece", image: turkeyImg },
+  { name: "Mid Wing", price: 7000, description: "Per portion", image: midWingImg },
+  { name: "Extra Pepper Sauce", price: 300, description: "1 portion", image: pepperSauceImg },
+  { name: "Chinchin (2.3kg)", price: 19500, description: "2.3kg pack", image: chinchinImg },
 ];
 
 const formatPrice = (price: number) => `₦${price.toLocaleString()}`;
@@ -69,6 +90,12 @@ const ProductGrid = () => {
           qty > 0 ? "border-primary/40 shadow-sm" : "border-border"
         }`}
       >
+        <img
+          src={item.image}
+          alt={item.name}
+          className="w-20 h-20 md:w-24 md:h-24 rounded-xl object-cover flex-shrink-0"
+          loading="lazy"
+        />
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
             <h3 className="font-display font-semibold text-card-foreground text-base md:text-lg">
@@ -113,7 +140,6 @@ const ProductGrid = () => {
   return (
     <section id="menu" className="py-16 px-4 bg-background">
       <div className="max-w-3xl mx-auto">
-        {/* Platters */}
         <div className="text-center mb-8">
           <h2 className="text-3xl md:text-4xl font-bold font-display text-foreground mb-2">
             🍽️ Platters
@@ -126,7 +152,6 @@ const ProductGrid = () => {
           {platters.map(renderItem)}
         </div>
 
-        {/* Extras */}
         <div className="text-center mb-8">
           <h2 className="text-3xl md:text-4xl font-bold font-display text-foreground mb-2">
             ➕ Extras
@@ -139,7 +164,6 @@ const ProductGrid = () => {
           {extras.map(renderItem)}
         </div>
 
-        {/* Order bar */}
         {selectedItems.length > 0 && (
           <div className="sticky bottom-4 mt-8 bg-card border border-border rounded-2xl p-4 shadow-lg">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
