@@ -14,10 +14,10 @@ const HeroSection = () => {
       </div>
       <div className="relative z-10 text-center px-4 max-w-3xl mx-auto py-20">
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold font-display text-primary-foreground mb-4 leading-tight">
-          Your Vendor Store
+          Klassy Delight Enterprise
         </h1>
         <p className="text-lg md:text-xl text-primary-foreground/80 font-body mb-8 max-w-xl mx-auto">
-          Delicious homemade meals delivered to your doorstep. Fresh, tasty, and affordable — order now!
+          Delicious small chops & platters for every occasion. Fresh, crispy, and affordable — order now!
         </p>
         <a
           href={whatsappUrl}
