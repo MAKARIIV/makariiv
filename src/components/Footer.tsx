@@ -7,7 +7,7 @@ const Footer = () => {
           Small chops, big vibes, zero wahala ✌️
         </p>
         <p className="mt-6 text-background/40 text-xs font-body">
-          © {new Date().getFullYear()} Klassy Delight Enterprise. All rights reserved.
+          © {new Date().getFullYear()} MAKARIIV Kitchen. All rights reserved.
         </p>
       </div>
     </footer>
