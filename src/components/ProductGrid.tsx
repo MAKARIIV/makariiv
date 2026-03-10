@@ -1,62 +1,7 @@
 import { useState } from "react";
-import { MessageCircle, Plus, Minus, Check, X, Settings } from "lucide-react";
+import { MessageCircle, Plus, Minus, Check, Settings } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-
-import singlePackImg from "@/assets/single-pack.jpg";
-import miniPlatterImg from "@/assets/mini-platter.jpg";
-import mediumPlatterImg from "@/assets/medium-platter.jpg";
-import familyPlatterImg from "@/assets/family-platter.jpg";
-import xtraLargePlatterImg from "@/assets/xtra-large-platter.jpg";
-import premiumPlatterImg from "@/assets/premium-platter.jpg";
-import springRollsImg from "@/assets/spring-rolls.jpg";
-import samosaImg from "@/assets/samosa.jpg";
-import chickenImg from "@/assets/chicken.jpg";
-import beefImg from "@/assets/beef.jpg";
-import gizzardKebabImg from "@/assets/gizzard-kebab.jpg";
-import puffsImg from "@/assets/puffs.jpg";
-import mosaImg from "@/assets/mosa.jpg";
-import moneyBagImg from "@/assets/money-bag.jpg";
-import snailsImg from "@/assets/snails.jpg";
-import turkeyImg from "@/assets/turkey.jpg";
-import midWingImg from "@/assets/mid-wing.jpg";
-import pepperSauceImg from "@/assets/pepper-sauce.jpg";
-import chinchinImg from "@/assets/chinchin.jpg";
-
-const WHATSAPP_NUMBER = "2348060026486";
-
-interface MenuItem {
-  name: string;
-  price: number;
-  description: string;
-  image: string;
-}
-
-const platters: MenuItem[] = [
-  { name: "Single Pack", price: 3000, description: "2 spring rolls, 1 samosa, 1 pc spicy chicken or beef, 4 puffs", image: singlePackImg },
-  { name: "Mini Platter", price: 12000, description: "5 spring rolls, 5 samosa, 10 puff puff, 3 pcs spicy chicken, pepper sauce", image: miniPlatterImg },
-  { name: "Medium Platter", price: 15500, description: "7 spring rolls, 7 samosa, 15 puff puff, 4 pcs spicy chicken, pepper sauce", image: mediumPlatterImg },
-  { name: "Family Platter", price: 25500, description: "10 spring rolls, 10 samosa, 20 puff puff, 2 large corndogs, 6 pcs spicy chicken, pepper sauce", image: familyPlatterImg },
-  { name: "Xtra Large Platter", price: 35000, description: "12 spring rolls, 12 samosa, 30 puff puff, 4 large corndogs, 10 pcs spicy chicken, pepper sauce", image: xtraLargePlatterImg },
-  { name: "Premium Platter", price: 80500, description: "20 spring rolls, 20 samosa, 20 mosa, 50 puffs, 10 corndogs, pepper sauce, 5 pcs spicy turkey, 10 pcs spicy chicken, 5 pcs gizzard or beef kebab", image: premiumPlatterImg },
-];
-
-const extras: MenuItem[] = [
-  { name: "Spring Rolls", price: 500, description: "1 piece", image: springRollsImg },
-  { name: "Samosa", price: 500, description: "1 piece", image: samosaImg },
-  { name: "Chicken", price: 2000, description: "Spicy chicken", image: chickenImg },
-  { name: "Beef", price: 800, description: "1 piece", image: beefImg },
-  { name: "Gizzard Kebab", price: 1500, description: "1 stick", image: gizzardKebabImg },
-  { name: "Puffs (10 pcs)", price: 1000, description: "10 pieces", image: puffsImg },
-  { name: "Mosa", price: 150, description: "1 piece", image: mosaImg },
-  { name: "Money Bag", price: 400, description: "1 piece", image: moneyBagImg },
-  { name: "Snails", price: 1200, description: "1 piece", image: snailsImg },
-  { name: "Turkey Part", price: 3000, description: "1 piece", image: turkeyImg },
-  { name: "Mid Wing", price: 7000, description: "Per portion", image: midWingImg },
-  { name: "Extra Pepper Sauce", price: 300, description: "1 portion", image: pepperSauceImg },
-  { name: "Chinchin (2.3kg)", price: 19500, description: "2.3kg pack", image: chinchinImg },
-];
-
-const formatPrice = (price: number) => `₦${price.toLocaleString()}`;
+import { menuCategories, getAllItems, formatPrice, WHATSAPP_NUMBER, type MenuItem } from "@/data/menuData";
 
 const ProductGrid = () => {
   const [quantities, setQuantities] = useState<Record<string, number>>({});
@@ -67,7 +12,6 @@ const ProductGrid = () => {
       if (stored) {
         const parsed = JSON.parse(stored);
         if (parsed.date !== new Date().toDateString()) {
-          // New day — apply defaults
           localStorage.setItem(
             "klassy-unavailable",
             JSON.stringify({ date: new Date().toDateString(), items: defaultUnavailable })
@@ -77,7 +21,6 @@ const ProductGrid = () => {
         return parsed.items || {};
       }
     } catch {}
-    // First visit — apply defaults
     localStorage.setItem(
       "klassy-unavailable",
       JSON.stringify({ date: new Date().toDateString(), items: defaultUnavailable })
@@ -104,7 +47,7 @@ const ProductGrid = () => {
     }));
   };
 
-  const allItems = [...platters, ...extras];
+  const allItems = getAllItems();
   const selectedItems = allItems.filter((p) => (quantities[p.name] || 0) > 0);
 
   const totalPrice = selectedItems.reduce(
@@ -119,7 +62,6 @@ const ProductGrid = () => {
   );
 
   const isUnavailable = (name: string) => !!unavailable[name];
-
   const availableCount = allItems.filter((i) => !isUnavailable(i.name)).length;
 
   const renderItem = (item: MenuItem) => {
@@ -212,7 +154,7 @@ const ProductGrid = () => {
           </div>
           <p className="text-muted-foreground font-body text-sm">
             <span className="font-semibold text-accent">{availableCount}</span> of{" "}
-            {allItems.length} items available today — Small chops available! 🎉
+            {allItems.length} items available today — Order now! 🎉
           </p>
           <button
             onClick={() => setEditMode((v) => !v)}
@@ -223,29 +165,21 @@ const ProductGrid = () => {
           </button>
         </div>
 
-        <div className="text-center mb-8">
-          <h2 className="text-3xl md:text-4xl font-bold font-display text-foreground mb-2">
-            🍽️ Platters
-          </h2>
-          <p className="text-muted-foreground font-body text-lg">
-            Small chops for every occasion
-          </p>
-        </div>
-        <div className="space-y-3 mb-14">
-          {platters.map(renderItem)}
-        </div>
-
-        <div className="text-center mb-8">
-          <h2 className="text-3xl md:text-4xl font-bold font-display text-foreground mb-2">
-            ➕ Extras
-          </h2>
-          <p className="text-muted-foreground font-body text-lg">
-            Add individual items to your order
-          </p>
-        </div>
-        <div className="space-y-3">
-          {extras.map(renderItem)}
-        </div>
+        {menuCategories.map((category, idx) => (
+          <div key={category.title} className={idx > 0 ? "mt-14" : ""}>
+            <div className="text-center mb-8">
+              <h2 className="text-3xl md:text-4xl font-bold font-display text-foreground mb-2">
+                {category.emoji} {category.title}
+              </h2>
+              <p className="text-muted-foreground font-body text-lg">
+                {category.subtitle}
+              </p>
+            </div>
+            <div className="space-y-3">
+              {category.items.map(renderItem)}
+            </div>
+          </div>
+        ))}
 
         {selectedItems.length > 0 && (
           <div className="sticky bottom-4 mt-8 bg-card border border-border rounded-2xl p-4 shadow-lg">
