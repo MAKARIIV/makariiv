@@ -73,16 +73,6 @@ export const menuCategories: MenuCategory[] = [
     ],
   },
   {
-    title: "Swallow & Soups",
-    emoji: "🥘",
-    subtitle: "Traditional Nigerian swallow with rich soups",
-    items: [
-      { name: "Pounded Yam & Egusi", price: 4500, description: "Smooth pounded yam with egusi soup, assorted meat", image: poundedYamEgusiImg },
-      { name: "Amala & Ewedu/Gbegiri", price: 4000, description: "Amala with ewedu and gbegiri soup, assorted meat", image: amalaEweduImg },
-      { name: "Eba & Ogbono", price: 3500, description: "Eba with draw ogbono soup, fish & meat", image: ebaOgbonoImg },
-    ],
-  },
-  {
     title: "Grilled & Peppered",
     emoji: "🔥",
     subtitle: "Smoky grilled proteins & pepper sauce",
